@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QGridLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton)
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 
 LOGO_WIDTH = 150
@@ -21,6 +21,7 @@ class StartWindow(QWidget):
 
         self.setFixedSize(475, 350)
         self.setWindowTitle("Login")
+        self.setWindowIcon(QIcon("assets/PIXELA_ORIGINAL.png"))
 
 
         qRectangle = self.frameGeometry()
