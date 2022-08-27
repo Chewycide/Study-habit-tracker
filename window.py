@@ -1,6 +1,12 @@
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget, QGridLayout, QHBoxLayout, QLineEdit, QLabel, QPushButton)
+from PyQt5.QtWidgets import (QWidget, QDesktopWidget,
+                            QGridLayout, QHBoxLayout,
+                            QLineEdit, QLabel,
+                            QPushButton, QFrame,
+                            QVBoxLayout)
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
+
+
 
 LOGO_WIDTH = 150
 LOGO_HEIGHT = LOGO_WIDTH
@@ -13,6 +19,7 @@ class StartWindow(QWidget):
 
         self.initWindow()
         self.initUI()
+        self.styleFile()
         self.show()
 
     
@@ -33,19 +40,26 @@ class StartWindow(QWidget):
     def initUI(self):
         """Initialize layouts and widgets"""
 
+        main_vbox = QVBoxLayout()
+        main_hbox = QHBoxLayout()
+
+
         grid = QGridLayout()
         grid.setContentsMargins(50, 10, 50, 10)
         grid.setSpacing(1)
         logo_hbox = QHBoxLayout()
-        button_hbox = QHBoxLayout()
         
 
-        self.pixela_logo = QLabel("", self)
+        frame = QFrame()
+        frame.setFixedSize(400, 300)
+
+
+        self.pixela_logo = QLabel("")
         self.pixela_logo.setMaximumSize(LOGO_WIDTH, LOGO_HEIGHT)
         self.pixela_logo.setPixmap(QPixmap("assets/PIXELA_ORIGINAL.png").scaled(LOGO_WIDTH,LOGO_HEIGHT,Qt.KeepAspectRatio))
 
 
-        self.usern_label = QLabel("Username", self)
+        self.usern_label = QLabel("Username:")
         self.usern_label.setMaximumSize(75, 20)
 
 
@@ -53,14 +67,25 @@ class StartWindow(QWidget):
         self.usern_entry.setMaximumSize(150, 20)
 
 
+        button_hbox = QHBoxLayout()
         self.login_button = QPushButton("Login")
         self.login_button.setFixedSize(60, 40)
 
 
+        main_vbox.addLayout(main_hbox)
+        main_hbox.addWidget(frame)
+        frame.setLayout(grid)
         grid.addLayout(logo_hbox, 0, 0, 1, 2)
         logo_hbox.addWidget(self.pixela_logo)
         grid.addWidget(self.usern_label, 1, 0)
         grid.addWidget(self.usern_entry, 1, 1)
         grid.addLayout(button_hbox, 2, 0, 1, 2)
         button_hbox.addWidget(self.login_button)
-        self.setLayout(grid)
+        self.setLayout(main_vbox)
+
+
+    def styleFile(self):
+        """Use stylesheet file"""
+
+        with open("styles/start_window.qss", "r") as stylesheet_file:
+            self.setStyleSheet(stylesheet_file.read())

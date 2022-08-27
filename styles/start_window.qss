@@ -1,0 +1,32 @@
+QWidget {
+    background-color: #053121;
+}
+QFrame {
+    background-color: #15db95;
+    border: 2px;
+    border-radius: 6px;
+}
+QLineEdit {
+    background-color: #e8fbf4;
+    border-radius: 5px;
+}
+QLabel {
+    font-family: 'Noto Sans Display';
+    font-weight: bold;
+}
+QPushButton {
+    background-color: #0d865b;
+    color: white;
+    border-radius: 5px;
+    border-bottom: 5px solid #053121;
+    font-family: 'Noto Sans Display';
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #0c7952;
+}
+
+QPushButton:pressed {
+    background-color: #0c7952;
+    border-bottom: 2px solid #053121;
+}
