@@ -28,7 +28,7 @@ class StartWindow(QWidget):
 
         self.setFixedSize(475, 350)
         self.setWindowTitle("Login")
-        self.setWindowIcon(QIcon("assets/PIXELA_ORIGINAL.png"))
+        self.setWindowIcon(QIcon("assets/PIXELA_ORIGINAL_e.png"))
 
 
         qRectangle = self.frameGeometry()
@@ -56,7 +56,7 @@ class StartWindow(QWidget):
 
         self.pixela_logo = QLabel("")
         self.pixela_logo.setMaximumSize(LOGO_WIDTH, LOGO_HEIGHT)
-        self.pixela_logo.setPixmap(QPixmap("assets/PIXELA_ORIGINAL.png").scaled(LOGO_WIDTH,LOGO_HEIGHT,Qt.KeepAspectRatio))
+        self.pixela_logo.setPixmap(QPixmap("assets/PIXELA_ORIGINAL_e.png").scaled(LOGO_WIDTH,LOGO_HEIGHT,Qt.KeepAspectRatio))
 
 
         self.usern_label = QLabel("Username:")
