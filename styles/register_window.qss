@@ -35,3 +35,16 @@ QCheckBox {
     font-family: 'Noto Sans Display';
     font-weight: bold;
 }
+QComboBox {
+    background-color: #0d865b;
+    color: white;
+    font-family: 'Noto Sans Display';
+    font-weight: bold;
+    selection-background-color: #860d38;
+}
+QComboBox QAbstractItemView {
+    background-color: #0d864f;
+    color: white;
+    selection-background-color: #860d38;
+    selection-color: white;
+}
