@@ -5,8 +5,7 @@ from PyQt5.QtWidgets import (QWidget, QDesktopWidget,
                             QVBoxLayout)
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
-from register_window import RegisterAccountWindow
-
+from application.register_window import RegisterAccountWindow
 
 
 LOGO_WIDTH = 150
@@ -108,3 +107,4 @@ class StartWindow(QWidget):
 
         self.register_window = RegisterAccountWindow()
 
+# TODO : add tooltips for registering
