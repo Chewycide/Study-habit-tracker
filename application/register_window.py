@@ -68,10 +68,12 @@ class RegisterAccountWindow(QWidget):
 
         username_label = QLabel("Username:")
         self.username_entry = QLineEdit()
+        self.username_entry.setPlaceholderText("[a-z][a-z0-9-]{1,32}")
 
 
         token_label = QLabel("Token:")
         self.token_entry = QLineEdit()
+        self.token_entry.setPlaceholderText("[ -~]{8,128}")
 
 
         checkbox_frame = QFrame()

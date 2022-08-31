@@ -1,13 +1,16 @@
+import requests
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget,
                             QGridLayout, QHBoxLayout,
                             QLineEdit, QLabel,
                             QPushButton, QFrame,
-                            QVBoxLayout)
+                            QVBoxLayout, QMessageBox)
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 from application.register_window import RegisterAccountWindow
+from application.user_window import UserWindow
 
 
+GRAPHID = "study1"
 LOGO_WIDTH = 150
 LOGO_HEIGHT = LOGO_WIDTH
 
@@ -17,9 +20,11 @@ class StartWindow(QWidget):
 
         super().__init__()
 
+        self.username = ""
+
         self.initWindow()
         self.initUI()
-        self.stylefile()
+        self.initStyle()
         self.show()
 
     
@@ -39,6 +44,12 @@ class StartWindow(QWidget):
 
     def initUI(self):
         """Initialize layouts and widgets"""
+
+        self.error_msg = QMessageBox()
+        self.error_msg.setIcon(QMessageBox.Critical)
+        self.error_msg.setWindowIcon(QIcon("assets/PIXELA_ORIGINAL_e.png"))
+        self.error_msg.setWindowTitle("ERROR")
+
 
         main_vbox = QVBoxLayout()
         main_hbox = QHBoxLayout()
@@ -70,6 +81,7 @@ class StartWindow(QWidget):
         button_hbox = QHBoxLayout()
         self.login_button = QPushButton("Login")
         self.login_button.setFixedSize(60, 40)
+        self.login_button.clicked.connect(self.login)
 
 
         self.register_button = QPushButton("Register")
@@ -95,7 +107,7 @@ class StartWindow(QWidget):
         self.setLayout(main_vbox)
 
 
-    def stylefile(self):
+    def initStyle(self):
         """Use stylesheet file"""
 
         with open("styles/start_window.qss", "r") as stylesheet_file:
@@ -107,4 +119,19 @@ class StartWindow(QWidget):
 
         self.register_window = RegisterAccountWindow()
 
-# TODO : add tooltips for registering
+
+    def login(self):
+        """login to pixela"""
+
+        self.username = self.usern_entry.text()
+        self.user_window = UserWindow()
+        # try:
+        #     login_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}")
+        #     login_response.raise_for_status()
+        # except requests.exceptions.HTTPError:
+        #     self.error_msg.setText(f"User '{self.username}' does not exist.")
+        #     self.error_msg.exec()
+        # else:
+        #     print(login_response.text)
+
+        # NOTE: Code is commented above since user_window.py is still being tested.
