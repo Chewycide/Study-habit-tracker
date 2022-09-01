@@ -1,0 +1,16 @@
+QWidget {
+    background-color: #053121;
+}
+QFrame {
+    background-color: #15db95;
+    border: 2px;
+    border-radius: 6px;
+}
+QLineEdit {
+    background-color: #e8fbf4;
+    border-radius: 5px;
+}
+QLabel {
+    font-family: 'Noto Sans Display';
+    font-weight: bold;
+}
