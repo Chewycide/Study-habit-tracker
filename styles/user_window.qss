@@ -14,3 +14,19 @@ QLabel {
     font-family: 'Noto Sans Display';
     font-weight: bold;
 }
+QPushButton {
+    background-color: #0d865b;
+    color: white;
+    border-radius: 5px;
+    border-bottom: 5px solid #053121;
+    font-family: 'Noto Sans Display';
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #0c7952;
+}
+
+QPushButton:pressed {
+    background-color: #0c7952;
+    border-bottom: 2px solid #053121;
+}

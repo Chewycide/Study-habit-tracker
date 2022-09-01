@@ -41,43 +41,58 @@ class UserWindow(QWidget):
         """Initialize widgets"""
 
         main_vbox = QVBoxLayout()
+        main_vbox.setAlignment(Qt.AlignTop)
+
 
         top_frame = QFrame()
-        top_frame.setMaximumSize(500, 500)
+        top_frame.setMaximumHeight(100)
         top_frame.setContentsMargins(20, 20, 20, 20)
         top_frame_grid = QGridLayout()
+        top_frame_grid.setHorizontalSpacing(100)
         top_frame_grid.setContentsMargins(10, 10, 10, 10)
-        top_frame_grid.setAlignment(Qt.AlignTop)
+        top_frame_grid.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         top_frame.setLayout(top_frame_grid)
 
 
-        recent_date_label = QLabel(f"Last study date: {self.last_date}")
-        recent_hrs_label = QLabel(f"Recent study hours: {self.last_hrs} hr/s")
+        recent_date_label = QLabel("Last study date:")
+        recent_date_label_data = QLabel(f"{self.last_date}")
+        recent_hrs_label = QLabel("Recent study hours:")
+        recent_hrs_label_data = QLabel(f"{self.last_hrs} hr/s")
 
 
         bottom_frame = QFrame()
+        bottom_frame.setMaximumHeight(600)
         bottom_frame.setContentsMargins(20, 20, 20, 20)
         bottom_frame_grid = QGridLayout()
-        bottom_frame_grid.setHorizontalSpacing(50)
+        bottom_frame_grid.setHorizontalSpacing(30)
         bottom_frame_grid.setContentsMargins(10, 10, 10, 10)
-        bottom_frame_grid.setAlignment(Qt.AlignTop)
+        bottom_frame_grid.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         bottom_frame.setLayout(bottom_frame_grid)
 
 
-        today_date_label = QLabel(f"Date today: {self.today_date}")
+        today_date_label = QLabel("Date today:")
+        today_date_label_data = QLabel(f"{self.today_date}")
         today_hrs_label = QLabel(f"Hrs studied today: {self.today_hrs} hr/s")
-
         today_hrs_input = QLineEdit()
 
 
+        post_pixel_button = QPushButton("POST")
+        post_pixel_button.setFixedSize(60, 40)
+
+
         main_vbox.addWidget(top_frame)
-        top_frame_grid.addWidget(recent_date_label, 0, 0)
-        top_frame_grid.addWidget(recent_hrs_label, 1, 0)
 
         main_vbox.addWidget(bottom_frame)
-        bottom_frame_grid.addWidget(today_date_label, 0, 0)
-        bottom_frame_grid.addWidget(today_hrs_label, 1, 0)
-        bottom_frame_grid.addWidget(today_hrs_input, 1, 1)
+        bottom_frame_grid.addWidget(recent_date_label, 0, 0)
+        bottom_frame_grid.addWidget(recent_date_label_data, 0, 1)
+        bottom_frame_grid.addWidget(recent_hrs_label, 1, 0)
+        bottom_frame_grid.addWidget(recent_hrs_label_data, 1, 1)
+        bottom_frame_grid.addWidget(today_date_label, 2, 0)
+        bottom_frame_grid.addWidget(today_date_label_data, 2, 1)
+        bottom_frame_grid.addWidget(today_hrs_label, 3, 0)
+        bottom_frame_grid.addWidget(today_hrs_input, 3, 1)
+        bottom_frame_grid.addWidget(post_pixel_button, 2, 2, 2, 1)
+
         self.setLayout(main_vbox)
 
 
