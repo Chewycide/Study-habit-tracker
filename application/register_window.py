@@ -1,5 +1,6 @@
 import requests
 import json
+from pathlib import Path
 from PyQt5.QtWidgets import (QWidget, QDesktopWidget,
                             QFormLayout, QVBoxLayout,
                             QHBoxLayout, QLineEdit,
@@ -52,6 +53,11 @@ class RegisterAccountWindow(QWidget):
 
     def initUI(self):
         """Initialize layouts and widgets"""
+
+        self.error_msg = QMessageBox()
+        self.error_msg.setIcon(QMessageBox.Critical)
+        self.error_msg.setWindowIcon(QIcon("assets/PIXELA_ORIGINAL_e.png"))
+        self.error_msg.setWindowTitle("ERROR")
         
         main_vbox = QVBoxLayout()
         form_layout = QFormLayout()
@@ -179,19 +185,29 @@ class RegisterAccountWindow(QWidget):
 
 ########## save successfully created user to local file ######### 
 
-        register_params_json = {self.username : register_params}
+        registered_account_info = {
+            "USERNAME": self.username,
+            "TOKEN": self.token,
+            "AGREE_TOS": self.agreeTOS,
+            "NOT_MINOR": self.notMinor,
+            "PIXELA_GRAPH": f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}.html",
+            "ACCOUNT_WEBSITE": f"https://pixe.la/@{self.username}"
+        }
+
+        register_params_json = {self.username : registered_account_info}
         try:
             with open(f"user/users.json", "r") as user_file:
                 user_data = json.load(user_file)
-                print(user_data)
         except (FileNotFoundError, json.JSONDecodeError):
+            user_dir = Path("user/").mkdir(parents=True, exist_ok=True)
             user_data = register_params_json
             self.connectAPI(register_params, graph_params, header)
         else:
             # if user exists locally dont create, else create user
             if self.username in user_data:
-                print("existing local username")
-            else:
+                self.error_msg.setText("User exists locally.\nCreate another username.")
+                self.error_msg.exec()
+            else: # TODO: IF EXISTING ONLINE DONT CREATE
                 user_data.update(register_params_json)
                 self.connectAPI(register_params, graph_params, header)
         finally: # save

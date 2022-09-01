@@ -124,14 +124,15 @@ class StartWindow(QWidget):
         """login to pixela"""
 
         self.username = self.usern_entry.text()
-        self.user_window = UserWindow()
-        # try:
-        #     login_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}")
-        #     login_response.raise_for_status()
-        # except requests.exceptions.HTTPError:
-        #     self.error_msg.setText(f"User '{self.username}' does not exist.")
-        #     self.error_msg.exec()
-        # else:
-        #     print(login_response.text)
+        try:
+            login_response = requests.get(f"https://pixe.la/@{self.username}")
+            login_response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            self.error_msg.setText(f"User '{self.username}' does not exist.")
+            self.error_msg.exec()
+        else:
+            print(login_response.text)
+            self.user_window = UserWindow()
+            
 
         # NOTE: Code is commented above since user_window.py is still being tested.
