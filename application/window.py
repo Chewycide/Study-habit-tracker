@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt
 from application.register_window import RegisterAccountWindow
 from application.user_window import UserWindow
 
-
+GRAPHID = "study1"
 LOGO_WIDTH = 150
 LOGO_HEIGHT = LOGO_WIDTH
 
@@ -138,15 +138,18 @@ class StartWindow(QWidget):
         self.username = self.usern_entry.text()
         self.token = self.token_entry.text()
 
+        header = {"X-USER-TOKEN": self.token}
+
         if self.username == "" or self.token == "":
             self.error_msg.setText("Please fill out empty fields.")
             self.error_msg.exec()
         else:
             try:
-                login_response = requests.get(f"https://pixe.la/@{self.username}")
+                login_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/graph-def", headers=header)
+                check_support = login_response.json()
                 login_response.raise_for_status()
             except requests.exceptions.HTTPError:
-                self.error_msg.setText(f"User '{self.username}' does not exist.")
+                self.error_msg.setText(f"{check_support['message']}")
                 self.error_msg.exec()
             else:
                 self.user_window = UserWindow(user=self.username, token=self.token)
