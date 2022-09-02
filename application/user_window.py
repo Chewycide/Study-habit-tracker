@@ -67,13 +67,14 @@ class UserWindow(QWidget):
 
         recent_date_label = QLabel("Date Yesterday:")
         recent_date_label_data = QLabel(f"{self.last_date}")
-        recent_hrs_label = QLabel("Yesterday study hours:")
+        recent_hrs_label = QLabel("Hr/s studied yesterday:")
         recent_hrs_label_data = QLabel(f"{self.last_hrs} hr/s")
 
 
         today_date_label = QLabel("Date today:")
         today_date_label_data = QLabel(f"{self.today_date}")
-        today_hrs_label = QLabel(f"Hrs studied today: {self.today_hrs} hr/s")
+        today_hrs_label = QLabel(f"Hr/s studied today:")
+        today_hrs_label_data = QLabel(f"{self.today_hrs} hr/s")
         today_hrs_input = QLineEdit()
 
 
@@ -92,8 +93,9 @@ class UserWindow(QWidget):
         bottom_frame_grid.addWidget(today_date_label, 2, 0)
         bottom_frame_grid.addWidget(today_date_label_data, 2, 1)
         bottom_frame_grid.addWidget(today_hrs_label, 3, 0)
-        bottom_frame_grid.addWidget(today_hrs_input, 3, 1)
-        bottom_frame_grid.addWidget(post_pixel_button, 2, 2, 2, 1)
+        bottom_frame_grid.addWidget(today_hrs_label_data, 3, 1)
+        bottom_frame_grid.addWidget(today_hrs_input, 3, 2)
+        bottom_frame_grid.addWidget(post_pixel_button, 2, 3, 2, 1)
 
         self.setLayout(main_vbox)
 
@@ -120,16 +122,27 @@ class UserWindow(QWidget):
         self.last_date = yd_user
         self.today_date = td_user
 
-        self.getPixel(yd_pixela)
+        self.getPixel(yd_pixela, td_pixela)
 
 
-    def getPixel(self, yestrd):
-        """Get pixel info from yesterday"""
-
+    def getPixel(self, yestrd, tody):
+        """Get pixel info from yesterday and today"""
 
         header_token = {"X-USER-TOKEN": self.token}
-        get_pixel_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{yestrd}", headers=header_token)
-        print(get_pixel_response.text)
+        get_pixel_yesterday_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{yestrd}", headers=header_token)
+        yesterday_json = get_pixel_yesterday_response.json()
+        try:
+            self.last_hrs = yesterday_json["quantity"]
+        except KeyError:
+            self.last_hrs = "0"
+
+        
+        get_pixel_today_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{tody}", headers=header_token)
+        today_json = get_pixel_today_response.json()
+        try:
+            self.today_hrs = today_json["quantity"]
+        except KeyError:
+            self.today_hrs = "0"
 
 
     def getSVG(self):
