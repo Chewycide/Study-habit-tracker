@@ -5,22 +5,25 @@ from PyQt5.QtWidgets import (QWidget, QLineEdit,
                             QVBoxLayout, QHBoxLayout,
                             QFrame, QGridLayout,
                             )
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QImage
 from PyQt5.QtCore import Qt
+from PyQt5.QtSvg import QSvgWidget, QSvgRenderer
 
+GRAPHID = "study1"
 
 class UserWindow(QWidget):
 
-    def __init__(self):
+    def __init__(self, user):
 
         super().__init__()
 
+        self.username = user
         self.last_date = "yyyyMMdd"
         self.last_hrs = "0"
         self.today_date = "yyyyMMdd"
         self.today_hrs = "0"
         self.getDate()
-
+        self.getSVG()
 
         self.initWindow()
         self.initUI()
@@ -31,8 +34,7 @@ class UserWindow(QWidget):
     def initWindow(self):
         """Initialize user window after login"""
 
-        self.setMinimumSize(500, 500)
-        self.showMaximized()
+        self.setMinimumSize(500, 0)
         self.setWindowTitle("Register")
         self.setWindowIcon(QIcon("assets/PIXELA_ORIGINAL_e.png"))
 
@@ -45,29 +47,27 @@ class UserWindow(QWidget):
 
 
         top_frame = QFrame()
-        top_frame.setMaximumHeight(100)
-        top_frame.setContentsMargins(20, 20, 20, 20)
-        top_frame_grid = QGridLayout()
-        top_frame_grid.setHorizontalSpacing(100)
-        top_frame_grid.setContentsMargins(10, 10, 10, 10)
-        top_frame_grid.setAlignment(Qt.AlignTop | Qt.AlignLeft)
-        top_frame.setLayout(top_frame_grid)
-
-
-        recent_date_label = QLabel("Last study date:")
-        recent_date_label_data = QLabel(f"{self.last_date}")
-        recent_hrs_label = QLabel("Recent study hours:")
-        recent_hrs_label_data = QLabel(f"{self.last_hrs} hr/s")
+        top_frame_hbox = QHBoxLayout()
+        
+        top_frame_hbox.setContentsMargins(10, 10, 10, 10)
+        top_frame_hbox.setAlignment(Qt.AlignTop)
+        top_frame.setLayout(top_frame_hbox)
 
 
         bottom_frame = QFrame()
-        bottom_frame.setMaximumHeight(600)
+        bottom_frame.setMaximumHeight(1000)
         bottom_frame.setContentsMargins(20, 20, 20, 20)
         bottom_frame_grid = QGridLayout()
         bottom_frame_grid.setHorizontalSpacing(30)
         bottom_frame_grid.setContentsMargins(10, 10, 10, 10)
         bottom_frame_grid.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         bottom_frame.setLayout(bottom_frame_grid)
+
+
+        recent_date_label = QLabel("Date Yesterday:")
+        recent_date_label_data = QLabel(f"{self.last_date}")
+        recent_hrs_label = QLabel("Yesterday study hours:")
+        recent_hrs_label_data = QLabel(f"{self.last_hrs} hr/s")
 
 
         today_date_label = QLabel("Date today:")
@@ -81,6 +81,7 @@ class UserWindow(QWidget):
 
 
         main_vbox.addWidget(top_frame)
+        top_frame_hbox.addWidget(self.svg_widget, alignment=Qt.AlignCenter)
 
         main_vbox.addWidget(bottom_frame)
         bottom_frame_grid.addWidget(recent_date_label, 0, 0)
@@ -117,3 +118,26 @@ class UserWindow(QWidget):
 
         self.last_date = yd_user
         self.today_date = td_user
+
+        self.getPixel(yd_pixela)
+
+
+    def getPixel(self, yestrd):
+        """Get pixel info from yesterday"""
+
+        get_pixel_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{yestrd}")
+        # print(get_pixel_response.text)
+
+
+    def getSVG(self):
+        """Get the graph SVG using Pixela's API as an image then embed to the window"""
+
+        svg_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}")
+        graph_svg = svg_response.text
+        svg_bytes = bytearray(graph_svg, encoding='utf-8')
+        self.svg_widget = QImage.fromData(svg_bytes)
+        self.get_size = QSvgRenderer(svg_bytes)
+        self.svg_widget = QSvgWidget()
+        self.svg_widget.load(svg_bytes)
+
+        self.svg_widget.setFixedSize(self.get_size.defaultSize())

@@ -10,7 +10,6 @@ from application.register_window import RegisterAccountWindow
 from application.user_window import UserWindow
 
 
-GRAPHID = "study1"
 LOGO_WIDTH = 150
 LOGO_HEIGHT = LOGO_WIDTH
 
@@ -131,8 +130,7 @@ class StartWindow(QWidget):
             self.error_msg.setText(f"User '{self.username}' does not exist.")
             self.error_msg.exec()
         else:
-            print(login_response.text)
-            self.user_window = UserWindow()
+            self.user_window = UserWindow(user=self.username)
             
 
         # NOTE: Code is commented above since user_window.py is still being tested.
