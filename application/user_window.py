@@ -13,11 +13,12 @@ GRAPHID = "study1"
 
 class UserWindow(QWidget):
 
-    def __init__(self, user):
+    def __init__(self, user, token):
 
         super().__init__()
 
         self.username = user
+        self.token = token
         self.last_date = "yyyyMMdd"
         self.last_hrs = "0"
         self.today_date = "yyyyMMdd"
@@ -34,7 +35,7 @@ class UserWindow(QWidget):
     def initWindow(self):
         """Initialize user window after login"""
 
-        self.setMinimumSize(500, 0)
+        self.setMinimumWidth(800)
         self.setWindowTitle("Register")
         self.setWindowIcon(QIcon("assets/PIXELA_ORIGINAL_e.png"))
 
@@ -125,8 +126,10 @@ class UserWindow(QWidget):
     def getPixel(self, yestrd):
         """Get pixel info from yesterday"""
 
-        get_pixel_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{yestrd}")
-        # print(get_pixel_response.text)
+
+        header_token = {"X-USER-TOKEN": self.token}
+        get_pixel_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{yestrd}", headers=header_token)
+        print(get_pixel_response.text)
 
 
     def getSVG(self):

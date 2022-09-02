@@ -20,6 +20,7 @@ class StartWindow(QWidget):
         super().__init__()
 
         self.username = ""
+        self.token = ""
 
         self.initWindow()
         self.initUI()
@@ -77,6 +78,16 @@ class StartWindow(QWidget):
         self.usern_entry.setMaximumSize(150, 20)
 
 
+        self.token_label = QLabel("Token:")
+        self.token_label.setMaximumSize(75, 20)
+
+
+        self.token_entry = QLineEdit()
+        self.token_entry.setMaximumSize(150, 20)
+        self.token_entry.setEchoMode(QLineEdit.Password)
+        self.token_entry.setToolTip("token is saved locally in 'user/users.json'\nif account is created within this app")
+
+
         button_hbox = QHBoxLayout()
         self.login_button = QPushButton("Login")
         self.login_button.setFixedSize(60, 40)
@@ -85,7 +96,7 @@ class StartWindow(QWidget):
 
         self.register_button = QPushButton("Register")
         self.register_button.setFixedSize(60, 40)
-        self.setToolTip("Dont have a Pixela account?")
+        self.register_button.setToolTip("Dont have a Pixela account?")
         self.register_button.clicked.connect(self.register)
 
 
@@ -98,8 +109,10 @@ class StartWindow(QWidget):
 
         grid.addWidget(self.usern_label, 1, 0)
         grid.addWidget(self.usern_entry, 1, 1)
+        grid.addWidget(self.token_label, 2, 0)
+        grid.addWidget(self.token_entry, 2, 1)
 
-        grid.addLayout(button_hbox, 2, 0, 1, 2)
+        grid.addLayout(button_hbox, 3, 0, 1, 2)
         button_hbox.addWidget(self.login_button)
         button_hbox.addWidget(self.register_button)
 
@@ -123,6 +136,7 @@ class StartWindow(QWidget):
         """login to pixela"""
 
         self.username = self.usern_entry.text()
+        self.token = self.token_entry.text()
         try:
             login_response = requests.get(f"https://pixe.la/@{self.username}")
             login_response.raise_for_status()
@@ -130,7 +144,7 @@ class StartWindow(QWidget):
             self.error_msg.setText(f"User '{self.username}' does not exist.")
             self.error_msg.exec()
         else:
-            self.user_window = UserWindow(user=self.username)
+            self.user_window = UserWindow(user=self.username, token=self.token)
             
 
         # NOTE: Code is commented above since user_window.py is still being tested.
