@@ -47,7 +47,7 @@ class StartWindow(QWidget):
 
         self.error_msg = QMessageBox()
         self.error_msg.setIcon(QMessageBox.Critical)
-        self.error_msg.setWindowIcon(QIcon("assets/PIXELA_ORIGINAL_e.png"))
+        self.error_msg.setWindowIcon(QIcon("assets/PIXELA_RED_e.png"))
         self.error_msg.setWindowTitle("ERROR")
 
 
@@ -137,14 +137,17 @@ class StartWindow(QWidget):
 
         self.username = self.usern_entry.text()
         self.token = self.token_entry.text()
-        try:
-            login_response = requests.get(f"https://pixe.la/@{self.username}")
-            login_response.raise_for_status()
-        except requests.exceptions.HTTPError:
-            self.error_msg.setText(f"User '{self.username}' does not exist.")
+
+        if self.username == "" or self.token == "":
+            self.error_msg.setText("Please fill out empty fields.")
             self.error_msg.exec()
         else:
-            self.user_window = UserWindow(user=self.username, token=self.token)
+            try:
+                login_response = requests.get(f"https://pixe.la/@{self.username}")
+                login_response.raise_for_status()
+            except requests.exceptions.HTTPError:
+                self.error_msg.setText(f"User '{self.username}' does not exist.")
+                self.error_msg.exec()
+            else:
+                self.user_window = UserWindow(user=self.username, token=self.token)
             
-
-        # NOTE: Code is commented above since user_window.py is still being tested.
