@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (QWidget, QLineEdit,
                             QPushButton, QLabel,
                             QVBoxLayout, QHBoxLayout,
                             QFrame, QGridLayout,
-                            )
+                            QMessageBox)
 from PyQt5.QtGui import QIcon, QImage
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget, QSvgRenderer
@@ -19,10 +19,14 @@ class UserWindow(QWidget):
 
         self.username = user
         self.token = token
+        self.header_token = {"X-USER-TOKEN": self.token}
+
         self.last_date = "yyyyMMdd"
         self.last_hrs = "0"
         self.today_date = "yyyyMMdd"
         self.today_hrs = "0"
+
+        self.initErrorWin()
         self.getDate()
         self.getSVG()
 
@@ -74,12 +78,14 @@ class UserWindow(QWidget):
         today_date_label = QLabel("Date today:")
         today_date_label_data = QLabel(f"{self.today_date}")
         today_hrs_label = QLabel(f"Hr/s studied today:")
-        today_hrs_label_data = QLabel(f"{self.today_hrs} hr/s")
-        today_hrs_input = QLineEdit()
+        self.today_hrs_label_data = QLabel(f"{self.today_hrs} hr/s")
+        self.today_hrs_input = QLineEdit()
+        self.today_hrs_input.setPlaceholderText("POST TO GRAPH")
 
 
         post_pixel_button = QPushButton("POST")
         post_pixel_button.setFixedSize(60, 40)
+        post_pixel_button.clicked.connect(self.postPixel)
 
 
         main_vbox.addWidget(top_frame)
@@ -93,8 +99,8 @@ class UserWindow(QWidget):
         bottom_frame_grid.addWidget(today_date_label, 2, 0)
         bottom_frame_grid.addWidget(today_date_label_data, 2, 1)
         bottom_frame_grid.addWidget(today_hrs_label, 3, 0)
-        bottom_frame_grid.addWidget(today_hrs_label_data, 3, 1)
-        bottom_frame_grid.addWidget(today_hrs_input, 3, 2)
+        bottom_frame_grid.addWidget(self.today_hrs_label_data, 3, 1)
+        bottom_frame_grid.addWidget(self.today_hrs_input, 3, 2)
         bottom_frame_grid.addWidget(post_pixel_button, 2, 3, 2, 1)
 
         self.setLayout(main_vbox)
@@ -112,37 +118,51 @@ class UserWindow(QWidget):
 
         yesterday = dt.datetime.now() - dt.timedelta(1)
         yd_user = yesterday.strftime("%B %d, %Y")
-        yd_pixela = yesterday.strftime("%Y%m%d")
+        self.yd_pixela = yesterday.strftime("%Y%m%d")
 
         today = dt.datetime.now()
         td_user = today.strftime("%B %d, %Y")
-        td_pixela = today.strftime("%Y%m%d")
+        self.td_pixela = today.strftime("%Y%m%d")
 
 
         self.last_date = yd_user
         self.today_date = td_user
 
-        self.getPixel(yd_pixela, td_pixela)
+        self.getPixelYesterday()
+        self.getPixelToday()
 
 
-    def getPixel(self, yestrd, tody):
+    def getPixelYesterday(self):
         """Get pixel info from yesterday and today"""
 
-        header_token = {"X-USER-TOKEN": self.token}
-        get_pixel_yesterday_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{yestrd}", headers=header_token)
-        yesterday_json = get_pixel_yesterday_response.json()
         try:
-            self.last_hrs = yesterday_json["quantity"]
-        except KeyError:
-            self.last_hrs = "0"
+            get_pixel_yesterday_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{self.yd_pixela}", headers=self.header_token)
+            yesterday_json = get_pixel_yesterday_response.json()
+            get_pixel_yesterday_response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            self.error_msg.setText(f"{yesterday_json['message']}")
+            self.error_msg.exec()
+        else:    
+            try:
+                self.last_hrs = yesterday_json["quantity"]
+            except KeyError:
+                self.last_hrs = "0"
 
-        
-        get_pixel_today_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{tody}", headers=header_token)
-        today_json = get_pixel_today_response.json()
+
+    def getPixelToday(self):
         try:
-            self.today_hrs = today_json["quantity"]
-        except KeyError:
-            self.today_hrs = "0"
+            get_pixel_today_response = requests.get(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}/{self.td_pixela}", headers=self.header_token)
+            today_json = get_pixel_today_response.json()
+            get_pixel_today_response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            self.error_msg.setText(f"{today_json['message']}")
+            self.error_msg.exec()
+        else:
+            try:
+                self.today_hrs = today_json["quantity"]
+            except KeyError:
+                self.today_hrs = "0"
+        
 
 
     def getSVG(self):
@@ -157,3 +177,41 @@ class UserWindow(QWidget):
         self.svg_widget.load(svg_bytes)
 
         self.svg_widget.setFixedSize(self.get_size.defaultSize())
+
+
+    def postPixel(self):
+        """Post a pixel to the graph"""
+        
+        quantity = self.today_hrs_input.text()
+        if quantity == "":
+            self.error_msg.setText(f"Please fill out post field")
+            self.error_msg.exec()
+        post_pixel_params = {
+            "date": self.td_pixela,
+            "quantity": quantity
+        }
+
+        try:
+            post_pixel_response = requests.post(f"https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}", json=post_pixel_params, headers=self.header_token)
+            check_support = post_pixel_response.json()
+            post_pixel_response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            self.error_msg.setText(f"{check_support['message']}")
+            self.error_msg.exec()
+        else:
+            self.getPixelToday()
+            self.today_hrs_label_data.setText(f"{self.today_hrs} hr/s")
+            self.error_msg.setText(f"{check_support['message']}")
+            self.error_msg.exec()
+
+        
+    def initErrorWin(self):
+        """Initialize error message window"""
+
+        self.error_msg = QMessageBox()
+        self.error_msg.setIcon(QMessageBox.Critical)
+        self.error_msg.setWindowIcon(QIcon("assets/PIXELA_RED_e.png"))
+        self.error_msg.setWindowTitle("ERROR")
+
+
+# TODO: make a class for the error window with its own methods 
