@@ -79,6 +79,13 @@ class UserWindow(QWidget):
         today_date_label_data = QLabel(f"{self.today_date}")
         today_hrs_label = QLabel(f"Hr/s studied today:")
         self.today_hrs_label_data = QLabel(f"{self.today_hrs} hr/s")
+
+
+        self.graph_link = QLabel()
+        self.graph_link.setText(f'<a href="https://pixe.la/v1/users/{self.username}/graphs/{GRAPHID}.html">My Study Habit Tracker Graph</a>')
+        self.graph_link.setOpenExternalLinks(True)
+
+
         self.today_hrs_input = QLineEdit()
         self.today_hrs_input.setPlaceholderText("POST TO GRAPH")
 
@@ -100,6 +107,7 @@ class UserWindow(QWidget):
         bottom_frame_grid.addWidget(today_date_label_data, 2, 1)
         bottom_frame_grid.addWidget(today_hrs_label, 3, 0)
         bottom_frame_grid.addWidget(self.today_hrs_label_data, 3, 1)
+        bottom_frame_grid.addWidget(self.graph_link, 2, 2)
         bottom_frame_grid.addWidget(self.today_hrs_input, 3, 2)
         bottom_frame_grid.addWidget(post_pixel_button, 2, 3, 2, 1)
 
