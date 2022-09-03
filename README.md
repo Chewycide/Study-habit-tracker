@@ -1,3 +1,7 @@
 # Study habit tracker app
-unofficial app that tracks your study habits using Pixela.  
+unofficial GUI app that records your study habits to Pixela.  
 Pixela website: https://pixe.la  
+  
+
+## Screenshot of login window:
+![login_window](assets/login_ui.png)
