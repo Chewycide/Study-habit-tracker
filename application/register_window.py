@@ -1,12 +1,20 @@
 import requests
 import json
 from pathlib import Path
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget,
-                            QFormLayout, QVBoxLayout,
-                            QHBoxLayout, QLineEdit,
-                            QLabel, QPushButton,
-                            QFrame, QCheckBox,
-                            QComboBox, QMessageBox)
+from PyQt5.QtWidgets import (
+    QWidget, 
+    QDesktopWidget,
+    QFormLayout, 
+    QVBoxLayout,
+    QHBoxLayout,
+    QLineEdit,
+    QLabel,
+    QPushButton,
+    QFrame,
+    QCheckBox,
+    QComboBox,
+    QMessageBox
+    )
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 

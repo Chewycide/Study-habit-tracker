@@ -1,9 +1,16 @@
 import requests
-from PyQt5.QtWidgets import (QWidget, QDesktopWidget,
-                            QGridLayout, QHBoxLayout,
-                            QLineEdit, QLabel,
-                            QPushButton, QFrame,
-                            QVBoxLayout, QMessageBox)
+from PyQt5.QtWidgets import (
+    QWidget,
+    QDesktopWidget,
+    QGridLayout,
+    QHBoxLayout,
+    QLineEdit,
+    QLabel,
+    QPushButton,
+    QFrame,
+    QVBoxLayout,
+    QMessageBox
+    )
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 from application.register_window import RegisterAccountWindow

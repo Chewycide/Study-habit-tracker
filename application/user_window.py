@@ -1,10 +1,16 @@
 import requests
 import datetime as dt
-from PyQt5.QtWidgets import (QWidget, QLineEdit,
-                            QPushButton, QLabel,
-                            QVBoxLayout, QHBoxLayout,
-                            QFrame, QGridLayout,
-                            QMessageBox)
+from PyQt5.QtWidgets import (
+    QWidget,
+    QLineEdit,
+    QPushButton,
+    QLabel,
+    QVBoxLayout,
+    QHBoxLayout,
+    QFrame,
+    QGridLayout,
+    QMessageBox
+    )
 from PyQt5.QtGui import QIcon, QImage
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget, QSvgRenderer
